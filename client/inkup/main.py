@@ -48,15 +48,28 @@ def auth_required(f):
 
 @app.route("/", methods=["GET"])
 def index():
+    print("")
     posts = requests.get(
         f"{BASE_API_URL}/posts/",
-    )
-    urls = {
-            "login": url_for("login"),
-            "signup": url_for("signup"),
-    }
+    ).json()
 
-    return render_template("index.html", data=posts.json(), urls=urls)
+    urls = {
+        "login": url_for("login"),
+        "signup": url_for("signup"),
+        "signout": url_for("signout"),
+        "redirected_from": "/"
+    }
+    data = {
+        "is_authorized": bool(request.cookies.get("token")),
+    }
+    print(bool(request.cookies.get("token")))
+
+    return render_template(
+        "index.html",
+        posts=posts,
+        urls=urls,
+        data=data,
+    )
 
 
 @app.route("/login", methods=["GET", "POST"])
@@ -78,7 +91,9 @@ def login():
         return response
     else:
         return render_template(
-            "login.html", data={"login_url": url_for("login", _external=True)}
+            "login.html", urls={"login": url_for("login", _external=True),
+                                "homepage": url_for("index", _external=True),
+                                "signup": url_for("signup", _external=True)},
         )
 
 
@@ -93,14 +108,26 @@ def signup():
         token = api_response.json()["access"]
         expire_time = datetime.now() + timedelta(minutes=15)
 
-        response = make_response(redirect('/'))
+        response = make_response(redirect("/"))
         response.set_cookie("token", token, expires=expire_time, httponly=True)
 
         return response
     else:
         return render_template(
-            "signup.html", data={"signup_url": url_for("signup", _external=True)}
+            "signup.html", urls={"login": url_for("login", _external=True),
+                                "homepage": url_for("index", _external=True),
+                                "signup": url_for("signup", _external=True)},
         )
 
 
+@app.route("/singout", methods=["POST"])
+def signout():
+    redirect_page = request.form.get("redirected_from") or "/"
+    print("---")
+    print("redirected_from")
 
+    response = make_response(redirect(redirect_page))
+    response.set_cookie("token", '', expires=0)
+    print("You have signed out")
+
+    return response

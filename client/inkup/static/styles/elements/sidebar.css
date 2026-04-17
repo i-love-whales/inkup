@@ -61,34 +61,52 @@
     position: relative;
     top: 80%;
     background-color: #3772ff;
-    width: 90%;
+    width: 70%;
     height: 9%;
+    min-height: 70px;
     margin: 10px;
 }
 
-#user-icon {
-    height: 50px;
+.user-icons {
+    height: 40px;
     fill: #e6e8e6;
-    display: none
-}
-
-.links {
     position: relative;
-    left: 5%;
+    top: 10px;
 }
 
-.links p {
+.account p {
     color: #e6e8e6;
     font-size: 25px;
+    display: inline-block;
+    position: relative;
+    bottom: 7px;
+    margin-left: 15px;
 }
 
-.links a {
+.account a {
+    color: #e6e8e6;
     text-decoration: none; 
+    display: inline;
 }
 
-.links a:visited {
+.account a:visited {
     color: #e6e8e6;
 }
 
+#logout-form {
+    display: inline-block;
+    position: relative;
+    left: 30px;
+    bottom: 7px;
+}
 
+#logout-submit {
+    background: transparent;
+    border: none;
+    outline: none;
+    font-size: 25px;
+    font-family: inherit;
+    display: inline;
+    color: inherit;
+    cursor: pointer;
 

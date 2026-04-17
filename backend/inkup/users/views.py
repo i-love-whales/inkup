@@ -21,3 +21,7 @@ def register(request):
     return Response({"access": str(token.access_token)})
 
 
+# @api_view(["GET"])
+# def get_username(request):
+#     return Response({"username": User.objects.get(
+

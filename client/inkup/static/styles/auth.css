@@ -1,8 +1,7 @@
 .auth-block {
     width: 25%;
     min-width: 260px;
-    height: 50%;
-    /* min-height: 450px; */
+    height: 70%;
     background-color: #e6e8e6;
     position: relative;
     display: block;
@@ -49,8 +48,9 @@ label {
 }
 
 #submit {
-    position: absolute;
-    bottom: 30px;
+    position: relative;
+    margin-top: 40px;
+    margin-bottom: 40px;
     border: none;
     outline: none;
     display: block;
@@ -68,3 +68,27 @@ label {
     margin-top: 30px;
 }
 
+.links {
+    position: relative;
+    display: inline-block;
+    width: 90%;
+    text-overflow: hidden;
+}
+
+.icon {
+    width: 30px;
+    position: relative;
+    display: inline;
+}
+
+.links a {
+    display: inline;
+    position: relative;
+    bottom: 7px;
+    color: black;
+    text-decoration: none;
+}
+
+.links a:visited {
+    color: black;
+}
