@@ -105,6 +105,20 @@ def signup():
             f"{BASE_API_URL}/users/register/",
             json={"username": creds["username"], "password": creds["password"]},
         )
+        
+        if api_response.status_code == 401:
+            message = api_response.json().get("message")
+            zipped_message = zip(message.keys(), message.values())
+            parsed_message = [[field, [e for e in errors]] for field, errors in zipped_message]
+            print(parsed_message)
+            return render_template(
+                "signup.html",
+                urls={"login": url_for("login", _external=True),
+                      "homepage": url_for("index", _external=True),
+                      "signup": url_for("signup", _external=True)},
+                message=parsed_message,
+            )
+
         token = api_response.json()["access"]
         expire_time = datetime.now() + timedelta(minutes=15)
 

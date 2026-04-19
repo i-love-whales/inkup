@@ -6,13 +6,13 @@
     position: relative;
     display: block;
     top: 10vh;
-    margin-left: auto;
-    margin-right: auto;
     padding: 20px;
 }
 
 body {
     background-color: #080708;
+    display: flex; 
+    justify-content: center;
 }
 
 h1 {

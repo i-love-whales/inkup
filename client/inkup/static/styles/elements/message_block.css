@@ -1,0 +1,27 @@
+#message-block {
+    position: absolute;
+    display: flex;  
+    width: 20%;
+    top: 7%; 
+    background-color: white;
+    z-index: 2;
+    border: 5px ridge black;
+    border-radius: 20px;
+}   
+
+.message-block p, li {
+    position: relative;
+    right: 25px;
+}
+
+#toggle-msg {
+    background-color: #3772ff;
+    color: white;
+    outline: none;
+    border: none;
+    padding: 5px;
+    padding-left: 20px;
+    padding-right: 20px;
+    font-size: 20px;
+    font-family: inherit;
+}
