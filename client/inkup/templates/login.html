@@ -13,7 +13,7 @@
         <h1>Log In</h1>
         <form method="post" action="{{ urls.login }}">
             <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
-            {% if urls.redirected_from %}
+            {% if urls.redirected_from != "/" %}
                <script>
                 alert("You should authorise before accessing that page.")
                </script>

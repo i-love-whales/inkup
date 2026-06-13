@@ -1,6 +1,6 @@
 from posts.models import Like, Post
 from posts.serializers import PostsSerializer
-from rest_framework import generics, status
+from rest_framework import generics, status, permissions
 from rest_framework.exceptions import APIException
 from rest_framework.views import APIView, Response
 
@@ -10,6 +10,7 @@ class PostListCreateAPIView(generics.ListCreateAPIView):
         "pk", "content", "author__username"
     )
     serializer_class = PostsSerializer
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly] 
 
     def create(self, request):
         data = dict(request.data)
@@ -25,6 +26,7 @@ class PostListCreateAPIView(generics.ListCreateAPIView):
 class PostRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Post.objects.all()
     serializer_class = PostsSerializer
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly] 
 
     def partial_update(self, request, pk):
         for k in request.data.keys():
@@ -44,6 +46,8 @@ class PostRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
 
 
 class LikePostAPIView(APIView):
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly] 
+
     def post(self, request, post_id):
         user_id = request.user.pk
 
