@@ -92,6 +92,12 @@ def login():
             response.set_cookie("token", token, expires=EXPIRE_TIME, httponly=True)
 
             return response
+        else:
+            return render_template(
+                "login.html",
+                urls=URLS,
+                message=True
+            )
 
     return render_template(
         "login.html",
