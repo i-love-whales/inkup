@@ -6,6 +6,7 @@ from posts.models import Post, Like
 class PostsSerializer(serializers.ModelSerializer):
     likes_number = serializers.SerializerMethodField()
     author_username = serializers.SerializerMethodField()
+    time_created = serializers.SerializerMethodField()
 
     class Meta:
         model = Post
@@ -23,3 +24,6 @@ class PostsSerializer(serializers.ModelSerializer):
 
     def get_author_username(self, obj):
         return obj["author__username"]
+
+    def get_time_created(self, obj):
+        return obj["time_created"].strftime("%H:%M %B %d, %Y")

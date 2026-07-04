@@ -31,7 +31,7 @@ def get_profile(request, username):
 
 class PostListFromUserAPIView(generics.ListAPIView):
     queryset = Post.objects.select_related("author").values(
-        "pk", "content", "author__username"
+        "pk", "content", "time_created", "author__username"
     )
     serializer_class = PostsSerializer
 

@@ -18,13 +18,6 @@
     border-bottom: 1px solid grey;
 }
 
-.post p, h3 {
-    position: absolute;
-    width: 70%;
-    left: 7%; 
-    top: 0;
-}
-
 .post p {
     margin: 10px;
     overflow: hidden;
@@ -33,10 +26,6 @@
     -webkit-box-orient: vertical;
     text-wrap: wrap;
     top: 50px;
-}
-
-.post h3 {
-    top: 0;
 }
 
 .likes {
@@ -72,4 +61,14 @@
 
 a, a:visited {
     color: black
+}
+
+.top-line {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+}
+
+.time-created {
+    color: #696969;
 }
