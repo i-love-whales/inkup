@@ -10,7 +10,12 @@ class PostListCreateAPIView(generics.ListCreateAPIView):
         "pk", "content", "author__username"
     )
     serializer_class = PostsSerializer
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly] 
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+
+    def list(self, request):
+        queryset = self.get_queryset().order_by("-time_created")
+        serializer = PostsSerializer(queryset, many=True)
+        return Response(serializer.data)
 
     def create(self, request):
         data = dict(request.data)
@@ -26,7 +31,7 @@ class PostListCreateAPIView(generics.ListCreateAPIView):
 class PostRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Post.objects.all()
     serializer_class = PostsSerializer
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly] 
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
     def partial_update(self, request, pk):
         for k in request.data.keys():
@@ -46,7 +51,7 @@ class PostRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
 
 
 class LikePostAPIView(APIView):
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly] 
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
     def post(self, request, post_id):
         user_id = request.user.pk
@@ -69,5 +74,3 @@ class LikePostAPIView(APIView):
         like.delete()
 
         return Response(status=status.HTTP_204_NO_CONTENT)
-
-

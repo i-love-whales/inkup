@@ -45,11 +45,11 @@ def auth_required(f):
     return wrapper
 
 
-@app.route("/", methods=["GET"])
-def homepage():
-    posts = requests.get(
-        f"{BASE_API_URL}/posts/",
-    ).json()
+def get_current_user_data(request):
+    """
+    Checks whether the user is authorized. If they are it returns a 
+    username.
+    """ 
 
     data = {"is_authorized": False}
 
@@ -67,11 +67,20 @@ def homepage():
             data["is_authorized"] = True
             data["username"] = response.json().get("username")
 
+    return data
+
+
+@app.route("/", methods=["GET"])
+def homepage():
+    posts = requests.get(
+        f"{BASE_API_URL}/posts/",
+    ).json()
+
     return render_template(
         "index.html",
         posts=posts,
         urls=URLS,
-        data=data,
+        data=get_current_user_data(request),
     )
 
 
@@ -93,11 +102,7 @@ def login():
 
             return response
         else:
-            return render_template(
-                "login.html",
-                urls=URLS,
-                message=True
-            )
+            return render_template("login.html", urls=URLS, message=True)
 
     return render_template(
         "login.html",
@@ -154,11 +159,43 @@ def signout():
     return response
 
 
+@app.route("/users/profile/<username>", methods=["GET"])
+def profile(username):
+    data = get_current_user_data(request)
+    response = requests.get(f"{BASE_API_URL}/users/profile/{username}/")
+    posts = []
+
+    if response.status_code == 404:
+        profile_data = {
+            "username": username, 
+            "not_found": True
+        }
+    else:
+        profile_data = response.json()
+        posts = requests.get(f"{BASE_API_URL}/users/{username}/posts/").json()
+
+    return render_template(
+        "profile.html",
+        urls=URLS,
+        data=data,
+        profile_data=profile_data,
+        posts=posts,
+    )
+
+
+@app.route("/users/me/", methods=["GET"])
+@auth_required
+def current_profile():
+    data = get_current_user_data(request)
+    return redirect(url_for("profile", username=data["username"]))
+
+
 with app.test_request_context():
     URLS = {
         **{
             endpoint: url_for(endpoint, _external=True)
-            for endpoint in ("login", "homepage", "signup", "signout")
+            for endpoint in ("login", "homepage", "signup", "signout", "current_profile")
         },
+        "profile": url_for("profile", username="username", _external=True),
         "redirected_from": "/",
     }
