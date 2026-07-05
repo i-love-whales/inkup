@@ -9,10 +9,13 @@ class PostListCreateAPIView(generics.ListCreateAPIView):
     queryset = Post.objects.select_related("author").values(
         "pk", "content", "time_created", "author__username"
     )
+    serializer_class = PostsSerializer
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
     def list(self, request):
         queryset = self.get_queryset().order_by("-time_created")
         serializer = PostsSerializer(queryset, many=True)
+
         return Response(serializer.data)
 
     def create(self, request):

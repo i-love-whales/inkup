@@ -13,6 +13,17 @@
 
 <body>
     <main class="main">
+        <div class="post-form">
+            <form action="{{ urls.create_post }}" method="post">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+                {% if data.is_authorized %}
+                    <textarea rows="3" type="comment" name="content" placeholder="What's happening?" id="post-content"></textarea>
+                {% else %}
+                    <textarea disabled rows="3" type="comment" name="content" placeholder="What's happening?" id="post-content"></textarea>
+                {% endif %}
+                <input type="submit" value="Post" id="post-btn">
+            </form>
+        </div>
         {% block content %}{% endblock %}
         {% for post in posts %}
         <div class="post">

@@ -47,9 +47,9 @@ def auth_required(f):
 
 def get_current_user_data(request):
     """
-    Checks whether the user is authorized. If they are it returns a 
+    Checks whether the user is authorized. If they are it returns a
     username.
-    """ 
+    """
 
     data = {"is_authorized": False}
 
@@ -150,7 +150,6 @@ def signup():
 @app.route("/signout", methods=["POST"])
 @auth_required
 def signout():
-    print("enter signout")
     redirect_page = request.form.get("redirected_from") or url_for(
         "homepage", urls=URLS
     )
@@ -166,10 +165,7 @@ def profile(username):
     posts = []
 
     if response.status_code == 404:
-        profile_data = {
-            "username": username, 
-            "not_found": True
-        }
+        profile_data = {"username": username, "not_found": True}
     else:
         profile_data = response.json()
         posts = requests.get(f"{BASE_API_URL}/users/{username}/posts/").json()
@@ -190,11 +186,34 @@ def current_profile():
     return redirect(url_for("profile", username=data["username"]))
 
 
+@app.route("/posts", methods=["POST"])
+@auth_required
+def create_post():
+    response = requests.post(
+        f"{BASE_API_URL}/posts/",
+        json={
+            "content": request.form.get("content"),
+        },
+        headers={
+            "Authorization": f"Bearer {request.cookies.get("token")}",
+       }
+    )
+
+    return redirect(URLS["homepage"])
+
+
 with app.test_request_context():
     URLS = {
         **{
             endpoint: url_for(endpoint, _external=True)
-            for endpoint in ("login", "homepage", "signup", "signout", "current_profile")
+            for endpoint in (
+                "login",
+                "homepage",
+                "signup",
+                "signout",
+                "current_profile",
+                "create_post",
+            )
         },
         "profile": url_for("profile", username="username", _external=True),
         "redirected_from": "/",
