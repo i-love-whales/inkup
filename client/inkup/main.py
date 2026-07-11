@@ -179,27 +179,43 @@ def profile(username):
     )
 
 
-@app.route("/users/me/", methods=["GET"])
+@app.route("/users/me", methods=["GET"])
 @auth_required
 def current_profile():
     data = get_current_user_data(request)
     return redirect(url_for("profile", username=data["username"]))
 
 
-@app.route("/posts", methods=["POST"])
+@app.route("/posts/create", methods=["POST"])
 @auth_required
 def create_post():
-    response = requests.post(
-        f"{BASE_API_URL}/posts/",
-        json={
-            "content": request.form.get("content"),
-        },
-        headers={
-            "Authorization": f"Bearer {request.cookies.get("token")}",
-       }
-    )
+    if request.method == "POST":
+        response = requests.post(
+            f"{BASE_API_URL}/posts/",
+            json={
+                "content": request.form.get("content"),
+            },
+            headers={
+                "Authorization": f"Bearer {request.cookies.get("token")}",
+           }
+        )
 
     return redirect(URLS["homepage"])
+
+
+@app.route("/posts/delete", methods=["POST"])
+def delete_post():
+    redirect_page = request.form.get("redirected_from") or url_for(
+        "homepage", urls=URLS
+    )
+    print(f"{BASE_API_URL}/posts/{request.form.get("post_id")}/")
+    requests.delete(
+        f"{BASE_API_URL}/posts/{request.form.get("post_id")}/",
+        headers={
+            "Authorization": f"Bearer {request.cookies.get("token")}",
+        },
+    )
+    return redirect(redirect_page)
 
 
 with app.test_request_context():
@@ -213,6 +229,7 @@ with app.test_request_context():
                 "signout",
                 "current_profile",
                 "create_post",
+                "delete_post",
             )
         },
         "profile": url_for("profile", username="username", _external=True),

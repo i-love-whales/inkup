@@ -16,11 +16,7 @@
         <div class="post-form">
             <form action="{{ urls.create_post }}" method="post">
                 <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
-                {% if data.is_authorized %}
-                    <textarea rows="3" type="comment" name="content" placeholder="What's happening?" id="post-content"></textarea>
-                {% else %}
-                    <textarea disabled rows="3" type="comment" name="content" placeholder="What's happening?" id="post-content"></textarea>
-                {% endif %}
+                <textarea {% if not data.is_authorized %} disabled {% endif %}  rows="3" type="comment" name="content" placeholder="What's happening?" id="post-content"></textarea>
                 <input type="submit" value="Post" id="post-btn">
             </form>
         </div>
@@ -36,12 +32,34 @@
                 <p class="time-created">{{ post.time_created }}</p>
             </div>
             <p>{{ post.content }}</p>
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" class="elipsis-options">
+            <button {% if not (data.is_authorized and post.author_username == data.username) %} disabled {% endif %} class="elipsis-options" onclick="toggleOptions({{ post.pk }})">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640">
                 <path 
                     d="M96 320C96 289.1 121.1 264 152 264C182.9 264 208 289.1 208 320C208 350.9 182.9 376 152 376C121.1 376 96 350.9 96 320zM264 320C264 289.1 289.1 264 320 264C350.9 264 376 289.1 376 320C376 350.9 350.9 376 320 376C289.1 376 264 350.9 264 320zM488 264C518.9 264 544 289.1 544 320C544 350.9 518.9 376 488 376C457.1 376 432 350.9 432 320C432 289.1 457.1 264 488 264z"/>
             </svg>
+            </button>
+            <div class="options" id="options_p{{ post.pk }}" style="display: none;">
+                {% if data.is_authorized and post.author_username == data.username %}
+                <form action="{{ urls.delete_post }}" method="post"> 
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+                    <input type="hidden" name="redirected_from" value="{{ urls.redirected_from }}">
+                    <input type="hidden" name="post_id" value="{{ post.pk }}" />
+                    <input type="submit" value="Delete" id="detete-btn" />
+                </form>
+                {% endif %}
+            </div>
         </div>
         {% endfor %}
+        <script>
+            function toggleOptions(post_id) {
+                const options = document.getElementById("options_p" + post_id)
+                if (options.style.display == "none") {
+                    options.style.display = "inline-block"
+                } else {
+                    options.style.display = "none"
+                }
+            }
+        </script>
     </main>
 
     <sidebar class="sidebar">

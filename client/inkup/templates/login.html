@@ -4,7 +4,7 @@
 
 {% block content %}
 {% if message %}
-<div id="message-block">
+<div id="message-block" style="display: flex;">
     <ul>
         <li><p>No active account found with the given credentials</p></li>
     </ul>
@@ -44,9 +44,9 @@
             </svg>
             <a href="{{ urls.signup }}">Sing Up</a>
             {% if message %}
-            <button id= "toggle-msg" type="button" onclick="hideMessageBlock()">Toggle message block</button>
+            <button id= "toggle-msg" type="button" onclick="toggleMessageBlock()">Toggle message block</button>
             <script>
-                function hideMessageBlock() {
+                function toggleMessageBlock() {
                     const message_block = document.getElementById("message-block")
                     if (message_block.style.display == "flex") {
                         message_block.style.display = "none"

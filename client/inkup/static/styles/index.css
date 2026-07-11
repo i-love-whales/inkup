@@ -50,6 +50,36 @@
     display: inline-block;
     right: 10px;
     top: 10px;
+    border: none;
+    outline: none;
+    background-color: transparent;
+}
+
+.elipsis-options svg {
+    width: 30px;
+}
+
+.options {
+    position: absolute;
+    display: inline-block;
+    right: 10px;
+    top: 40px;
+    background-color: black;
+    padding: 5px;
+    border-radius: 5px;
+}
+
+.options input {
+    margin: 5px;
+    border: none;
+    outline: none;
+    background-color: transparent;
+    color: white;
+    font-family: inherit;
+}
+
+.options input:hover {
+    font-style: underline;
 }
 
 .user-profile {
