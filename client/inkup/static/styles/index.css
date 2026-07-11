@@ -141,3 +141,33 @@ a, a:visited {
     top: 20px;
     left: 20px;
 }
+
+.bottom-line {
+    display: flex;
+    flex-direction: row;
+    gap: 3px;
+}
+
+.like-btn {
+    border: none;
+    background: transparent;
+}
+
+.likes {
+    width: 25px;
+    fill: black;
+}
+
+.pressed_likes {
+    width: 25px;
+    fill: #E30B5D;
+}
+
+.bottom-line form {
+    display: flex;
+    justify-content: center;
+}
+
+.bottom-line p {
+    margin-left: 0; 
+}

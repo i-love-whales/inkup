@@ -65,7 +65,10 @@ def get_current_user_data(request):
 
         if response.status_code == 200:
             data["is_authorized"] = True
-            data["username"] = response.json().get("username")
+
+            response_data = response.json()
+            data["username"] = response_data.get("username")
+            data["liked_posts"] = response_data.get("liked_posts")
 
     return data
 
@@ -208,7 +211,6 @@ def delete_post():
     redirect_page = request.form.get("redirected_from") or url_for(
         "homepage", urls=URLS
     )
-    print(f"{BASE_API_URL}/posts/{request.form.get("post_id")}/")
     requests.delete(
         f"{BASE_API_URL}/posts/{request.form.get("post_id")}/",
         headers={
@@ -216,6 +218,32 @@ def delete_post():
         },
     )
     return redirect(redirect_page)
+
+
+@app.route("/posts/like", methods=["POST"])
+@auth_required
+def like_post():
+    redirect_page = request.form.get("redirected_from") or url_for(
+        "homepage", urls=URLS
+    )
+
+    if request.form.get("is_liked") == "True":
+        requests.delete(
+            f"{BASE_API_URL}/posts/{request.form.get('post_id')}/like/",
+            headers={
+                "Authorization": f"Bearer {request.cookies.get("token")}",
+            },
+        )
+    else:
+        requests.post(
+            f"{BASE_API_URL}/posts/{request.form.get('post_id')}/like/",
+            headers={
+                "Authorization": f"Bearer {request.cookies.get("token")}",
+            },
+        )
+
+    return redirect(redirect_page)
+
 
 
 with app.test_request_context():
@@ -230,6 +258,7 @@ with app.test_request_context():
                 "current_profile",
                 "create_post",
                 "delete_post",
+                "like_post",
             )
         },
         "profile": url_for("profile", username="username", _external=True),

@@ -3,7 +3,7 @@ from rest_framework import serializers
 from posts.models import Post, Like
 
 
-class PostsSerializer(serializers.ModelSerializer):
+class PostSerializer(serializers.ModelSerializer):
     likes_number = serializers.SerializerMethodField()
     author_username = serializers.SerializerMethodField()
     time_created = serializers.SerializerMethodField()
@@ -16,7 +16,7 @@ class PostsSerializer(serializers.ModelSerializer):
             "time_created",
             "author",
             "likes_number",
-            "author_username"
+            "author_username",
         ]
 
     def get_likes_number(self, obj):
@@ -27,3 +27,11 @@ class PostsSerializer(serializers.ModelSerializer):
 
     def get_time_created(self, obj):
         return obj["time_created"].strftime("%H:%M %B %d, %Y")
+
+
+class LikeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Like
+        fields = [
+            "post_id",
+        ]

@@ -1,5 +1,5 @@
 from posts.models import Like, Post
-from posts.serializers import PostsSerializer
+from posts.serializers import PostSerializer
 from rest_framework import generics, status, permissions
 from rest_framework.exceptions import APIException
 from rest_framework.views import APIView, Response
@@ -9,12 +9,12 @@ class PostListCreateAPIView(generics.ListCreateAPIView):
     queryset = Post.objects.select_related("author").values(
         "pk", "content", "time_created", "author__username"
     )
-    serializer_class = PostsSerializer
+    serializer_class = PostSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
     def list(self, request):
         queryset = self.get_queryset().order_by("-time_created")
-        serializer = PostsSerializer(queryset, many=True)
+        serializer = PostSerializer(queryset, many=True)
 
         return Response(serializer.data)
 
@@ -31,7 +31,7 @@ class PostListCreateAPIView(generics.ListCreateAPIView):
 
 class PostRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Post.objects.all()
-    serializer_class = PostsSerializer
+    serializer_class = PostSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
     def partial_update(self, request, pk):

@@ -3,14 +3,20 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 from django.contrib.auth.models import User
 
-from posts.models import Post
-from posts.serializers import PostsSerializer
+from posts.models import Post, Like
+from posts.serializers import PostSerializer, LikeSerializer
 
 
 @api_view(["GET"])
 @permission_classes([permissions.IsAuthenticated])
-def get_username(request):
-    return Response({"username": request.user.username})
+def get_current_user_data(request):
+    liked_posts = Like.objects.filter(user_id=request.user.pk)
+
+    def serialize_like_db_instance(like_instance):
+        like = LikeSerializer(like_instance)
+        return like.data.get("post_id")
+
+    return Response({"username": request.user.username, "liked_posts": map(serialize_like_db_instance, liked_posts)})
 
 
 @api_view(["GET"])
@@ -33,11 +39,11 @@ class PostListFromUserAPIView(generics.ListAPIView):
     queryset = Post.objects.select_related("author").values(
         "pk", "content", "time_created", "author__username"
     )
-    serializer_class = PostsSerializer
+    serializer_class = PostSerializer
 
     def list(self, request, username):
         queryset = self.get_queryset().filter(author__username=username)
         queryset = queryset.order_by("-time_created")
-        serializer = PostsSerializer(queryset, many=True)
+        serializer = PostSerializer(queryset, many=True)
 
         return Response(serializer.data) 
